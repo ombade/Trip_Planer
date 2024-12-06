@@ -73,8 +73,31 @@
       width: 90%;
       max-width: 600px;
       overflow: auto;
-      white-space: pre-wrap;
+      white-space: normal;
       color: #444;
+    }
+
+    #output h2 {
+      color: #4CAF50;
+      margin-bottom: 10px;
+    }
+
+    #output h3 {
+      color: #555;
+      margin: 15px 0 10px;
+    }
+
+    #output p, #output ul {
+      margin: 0 0 10px;
+      line-height: 1.6;
+    }
+
+    #output ul {
+      padding-left: 20px;
+    }
+
+    #output li {
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -109,15 +132,18 @@
       const days = document.getElementById("days").value;
 
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
-      const prompt = `Create a travel itinerary from ${fromDest} to ${toDest} for ${days} days.`;
+      const prompt = `Create a travel itinerary from ${fromDest} to ${toDest} for ${days} days in detailed HTML format using proper headings (h2, h3), paragraphs, and bullet points.`;
 
       try {
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const text = await response.text();
-        document.getElementById("output").textContent = text;
+        const htmlContent = await response.text();
+
+        document.getElementById("output").innerHTML = htmlContent;
       } catch (error) {
-        document.getElementById("output").textContent = "Failed to generate itinerary. Please check your input or try again.";
+        document.getElementById("output").innerHTML = `
+          <p style="color: red;">Failed to generate itinerary. Please check your input or try again.</p>
+        `;
         console.error(error);
       }
     }
